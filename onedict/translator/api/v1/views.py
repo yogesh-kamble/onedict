@@ -23,6 +23,8 @@ class TranslatorView(ViewSet):
         word_definition = EnglishWordDict.objects.is_word_exist(word)
         if word_definition is False:
             word_definitions = EnglishWordDict.objects.translate_word(word)
+            if not word_definitions:
+                return Response({"error": "Definition for %s not found"%word}, status=status.HTTP_400_BAD_REQUEST)
             EnglishWordDict.objects.add_word_to_db(word, word_definitions)
             # For Now return only one definition
             word_definition = word_definitions[0]
